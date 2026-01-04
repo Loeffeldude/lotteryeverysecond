@@ -9,6 +9,9 @@
 !.yarn/releases
 !.yarn/versions
 
+frontend/public/impressum.html
+frontend/public/datenschutz.html
+
 /coverage
 
 /.next/
