@@ -142,27 +142,8 @@ routes.set(new URLPattern({ pathname: "/history/:type" }), (pattern, req) => {
 
 if (import.meta.main) {
   everySecond(async () => {
-    const now = Date.now();
-
-    if (isPaused && now < pauseUntil) {
-      return;
-    }
-
-    if (isPaused && now >= pauseUntil) {
-      isPaused = false;
-      console.log("Resuming lottery draws after jackpot win!");
-    }
-
     const results = await Promise.all(lotteries.map(saveLotteryResult));
     const payloads = results.map((r) => JSON.stringify(r));
-
-    const hasJackpot = results.some((r) => r.score === 1.0);
-
-    if (hasJackpot) {
-      isPaused = true;
-      pauseUntil = now + 30000;
-      console.log("JACKPOT! Pausing for 30 seconds...");
-    }
 
     sockets.forEach((socket) => {
       payloads.forEach((p) => socket.send(p));

@@ -67,9 +67,27 @@ h1 {
 }
 
 .wins-number {
-  color: #22c55e;
+  color: #999;
   font-size: 0.9rem;
   font-weight: 700;
+}
+.wins-number--win {
+  color: #22c55e;
+}
+
+.time-played {
+  padding: 1rem;
+  border-radius: 8px;
+  gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.time-played-label {
+  color: #999;
+  font-size: 0.9rem;
+  margin-right: 0.5rem;
 }
 
 .cards {

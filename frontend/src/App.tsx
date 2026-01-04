@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import type {
   EuroJackpotResult,
   PowerballResult,
@@ -27,7 +27,30 @@ function App() {
   const [isPaused, setIsPaused] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [totalWins, setTotalWins] = useState(0);
-  const itemsPerPage = 20;
+
+  const timePlayed = useMemo(() => {
+    if (!powerball || !euroJackpot) {
+      return "";
+    }
+
+    const time = Math.max(euroJackpot.id, powerball.id) / 2;
+
+    const seconds = time % 60;
+    const minutes = Math.floor(time / 60) % 60;
+    const hours = Math.floor(time / (60 * 60)) % 24;
+    const days = Math.floor(time / (60 * 60 * 24)) % 365;
+    const years = Math.floor(time / (60 * 60 * 24 * 365));
+    const format = (n: number) => n.toFixed(0).padStart(2, "0");
+
+    let result = `${format(hours)}H:${format(minutes)}M:${format(seconds)}S`;
+
+    if (days) result += `${days} Days ` + result;
+    if (years) result = `${days} Years ` + result;
+
+    return result;
+  }, [euroJackpot, powerball]);
+
+  const itemsPerPage = 24;
 
   const params = new URLSearchParams(window.location.search);
   const pageParam = params.get("page");
@@ -69,7 +92,7 @@ function App() {
     } else {
       url.searchParams.set("page", page.toString());
     }
-    window.history.pushState({}, "", url);
+    window.history.replaceState({}, "", url);
     await refetchAll(page - 1);
   };
 
@@ -153,7 +176,15 @@ function App() {
         </p>
         <div className="wins-counter">
           <span className="wins-label">Total Jackpot Wins:</span>
-          <span className="wins-number">{totalWins}</span>
+          <span
+            className={`wins-number${totalWins ? " wins-number--win" : ""}`}
+          >
+            {totalWins}
+          </span>
+        </div>
+        <div className="time-played">
+          <span className="wins-label">Total Time Played:</span>
+          <span className="wins-label">{timePlayed}</span>
         </div>
       </header>
 

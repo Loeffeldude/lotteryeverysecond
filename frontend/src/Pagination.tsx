@@ -4,9 +4,20 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) {
+function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: PaginationProps) {
   return (
     <div className="pagination">
+      <button
+        onClick={() => onPageChange(1)}
+        disabled={currentPage === 1}
+        className="pagination-button"
+      >
+        {"<<"}
+      </button>
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
@@ -23,6 +34,13 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps) 
         className="pagination-button"
       >
         Next
+      </button>
+      <button
+        onClick={() => onPageChange(totalPages)}
+        disabled={currentPage >= totalPages}
+        className="pagination-button"
+      >
+        {">>"}
       </button>
     </div>
   );
