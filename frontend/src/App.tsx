@@ -44,7 +44,7 @@ function App() {
 
     let result = `${format(hours)}H:${format(minutes)}M:${format(seconds)}S`;
 
-    if (days) result += `${days} Days ` + result;
+    if (days) result = `${days} Days ` + result;
     if (years) result = `${days} Years ` + result;
 
     return result;
