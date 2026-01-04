@@ -35,7 +35,7 @@ function App() {
 
     const time = Math.max(euroJackpot.id, powerball.id) / 2;
 
-    const seconds = time % 60;
+    const seconds = Math.floor(time % 60);
     const minutes = Math.floor(time / 60) % 60;
     const hours = Math.floor(time / (60 * 60)) % 24;
     const days = Math.floor(time / (60 * 60 * 24)) % 365;
@@ -45,7 +45,7 @@ function App() {
     let result = `${format(hours)}H:${format(minutes)}M:${format(seconds)}S`;
 
     if (days) result = `${days} Days ` + result;
-    if (years) result = `${days} Years ` + result;
+    if (years) result = `${years} Years ` + result;
 
     return result;
   }, [euroJackpot, powerball]);
