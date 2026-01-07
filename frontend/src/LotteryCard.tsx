@@ -8,17 +8,32 @@ import Ball from "./Ball.tsx";
 interface EuroJackpotCardProps {
   type: "eurojackpot";
   result: EuroJackpotResult | null;
+  moneySpent?: { amount: number; currency: string };
+  moneyWon?: { amount: number; currency: string };
+  profitLoss?: { amount: number; currency: string };
 }
 
 interface PowerballCardProps {
   type: "powerball";
   result: PowerballResult | null;
+  moneySpent?: { amount: number; currency: string };
+  moneyWon?: { amount: number; currency: string };
+  profitLoss?: { amount: number; currency: string };
 }
 
 type LotteryCardProps = EuroJackpotCardProps | PowerballCardProps;
 
-function LotteryCard({ type, result }: LotteryCardProps) {
+function LotteryCard({ type, result, moneySpent, moneyWon, profitLoss }: LotteryCardProps) {
   const title = type === "eurojackpot" ? "EuroJackpot" : "Powerball";
+  
+  const formatCurrency = (amount: number, currency: string) => {
+    return new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
   
   const getStoredNumbers = (key: string, defaultValue: number[]) => {
     const stored = localStorage.getItem(key);
@@ -70,6 +85,34 @@ function LotteryCard({ type, result }: LotteryCardProps) {
           Match: {(result.score * 100).toFixed(1)}%
         </span>
       </div>
+      {(moneySpent || moneyWon || profitLoss) && (
+        <div className="finance-card">
+          {moneySpent && (
+            <div className="finance-row">
+              <span className="finance-label">Money Spent:</span>
+              <span className="finance-amount">
+                {formatCurrency(moneySpent.amount, moneySpent.currency)}
+              </span>
+            </div>
+          )}
+          {moneyWon && (
+            <div className="finance-row">
+              <span className="finance-label">Money Won:</span>
+              <span className="finance-amount finance-won">
+                {formatCurrency(moneyWon.amount, moneyWon.currency)}
+              </span>
+            </div>
+          )}
+          {profitLoss && (
+            <div className="finance-row">
+              <span className="finance-label">Profit/Loss:</span>
+              <span className={`finance-amount ${profitLoss.amount >= 0 ? 'finance-profit' : 'finance-loss'}`}>
+                {formatCurrency(profitLoss.amount, profitLoss.currency)}
+              </span>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="result-section">
         <h3>Official Draw</h3>

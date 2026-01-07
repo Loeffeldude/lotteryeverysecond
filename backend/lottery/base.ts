@@ -1,8 +1,25 @@
 import { z, ZodObject } from "zod";
 
+interface PrizeTier {
+  tier: number;
+  fixedPrize?: number;
+  shareOfPool?: number;
+}
+
+interface ScoreResult {
+  matchScore: number;
+  prizeTier: number | null;
+  winnings: number;
+}
+
 interface Lottery<T> {
   draw(): Promise<T>;
-  score(guess: T, target: T): number;
+  score(guess: T, target: T): ScoreResult;
+  price: number;
+  currency: string;
+  minJackpot: number;
+  prizePool: number;
+  prizeTiers: PrizeTier[];
 }
 
 // this is overengineered to shit

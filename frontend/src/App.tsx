@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type {
   EuroJackpotResult,
   PowerballResult,
+  Statistics,
 } from "@lotteryeverysecond/backend";
 import LotteryCard from "./LotteryCard.tsx";
 import HistoryTable from "./HistoryTable.tsx";
@@ -26,29 +27,7 @@ function App() {
   >([]);
   const [isPaused, setIsPaused] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  const [totalWins, setTotalWins] = useState(0);
-
-  const timePlayed = useMemo(() => {
-    if (!powerball || !euroJackpot) {
-      return "";
-    }
-
-    const time = Math.max(euroJackpot.id, powerball.id) / 2;
-
-    const seconds = Math.floor(time % 60);
-    const minutes = Math.floor(time / 60) % 60;
-    const hours = Math.floor(time / (60 * 60)) % 24;
-    const days = Math.floor(time / (60 * 60 * 24)) % 365;
-    const years = Math.floor(time / (60 * 60 * 24 * 365));
-    const format = (n: number) => n.toFixed(0).padStart(2, "0");
-
-    let result = `${format(hours)}H:${format(minutes)}M:${format(seconds)}S`;
-
-    if (days) result = `${days} Days ` + result;
-    if (years) result = `${years} Years ` + result;
-
-    return result;
-  }, [euroJackpot, powerball]);
+  const [statistics, setStatistics] = useState<Statistics | null>(null);
 
   const itemsPerPage = 24;
 
@@ -103,8 +82,9 @@ function App() {
     (event: MessageEvent) => {
       const data = JSON.parse(event.data);
 
-      if (data.score === 1) {
-        setTotalWins((prev) => prev + 1);
+      if (data.type === "statistics") {
+        setStatistics(data as Statistics);
+        return;
       }
 
       if (data.lottery_type === "eurojackpot") {
@@ -154,10 +134,6 @@ function App() {
   useEffect(() => {
     const fetchInitialData = async () => {
       await refetchAll(0);
-
-      const response = await fetch("/wins");
-      const data = await response.json();
-      setTotalWins(data.wins);
     };
 
     fetchInitialData();
@@ -174,23 +150,47 @@ function App() {
           We play both Powerball and EuroJackpot lotteries automatically, every
           single second. Watch the dreams come true (or not) in real-time.
         </p>
-        <div className="wins-counter">
-          <span className="wins-label">Total Jackpot Wins:</span>
-          <span
-            className={`wins-number${totalWins ? " wins-number--win" : ""}`}
-          >
-            {totalWins}
-          </span>
-        </div>
-        <div className="time-played">
-          <span className="wins-label">Total Time Played:</span>
-          <span className="wins-label">{timePlayed}</span>
-        </div>
+        {statistics && (
+          <>
+            <div className="wins-counter">
+              <span className="wins-label">Total Jackpot Wins:</span>
+              <span
+                className={`wins-number${statistics.wins ? " wins-number--win" : ""}`}
+              >
+                {statistics.wins}
+              </span>
+            </div>
+            <div className="time-played">
+              <span className="wins-label">Total Time Played:</span>
+              <span className="wins-label">
+                {statistics.timePlayed.years > 0 &&
+                  `${statistics.timePlayed.years} Years `}
+                {statistics.timePlayed.days > 0 &&
+                  `${statistics.timePlayed.days} Days `}
+                {statistics.timePlayed.hours.toString().padStart(2, "0")}H:
+                {statistics.timePlayed.minutes.toString().padStart(2, "0")}M:
+                {statistics.timePlayed.seconds.toString().padStart(2, "0")}S
+              </span>
+            </div>
+          </>
+        )}
       </header>
 
       <div className="cards">
-        <LotteryCard type="eurojackpot" result={euroJackpot} />
-        <LotteryCard type="powerball" result={powerball} />
+        <LotteryCard
+          type="eurojackpot"
+          result={euroJackpot}
+          moneySpent={statistics?.moneySpent.eurojackpot}
+          moneyWon={statistics?.moneyWon.eurojackpot}
+          profitLoss={statistics?.profitLoss.eurojackpot}
+        />
+        <LotteryCard
+          type="powerball"
+          result={powerball}
+          moneySpent={statistics?.moneySpent.powerball}
+          moneyWon={statistics?.moneyWon.powerball}
+          profitLoss={statistics?.profitLoss.powerball}
+        />
       </div>
 
       <AboutSection />

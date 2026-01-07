@@ -9,6 +9,16 @@ interface HistoryTableProps {
 }
 
 function HistoryTable({ history }: HistoryTableProps) {
+  const formatCurrency = (amount: number, type: string) => {
+    const currency = type === "eurojackpot" ? "EUR" : "USD";
+    return new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency,
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
   return (
     <div className="history-table">
       <table>
@@ -18,7 +28,7 @@ function HistoryTable({ history }: HistoryTableProps) {
             <th>Type</th>
             <th>Draw</th>
             <th>Guess</th>
-            <th>Match</th>
+            <th>Winnings</th>
             <th>Time</th>
           </tr>
         </thead>
@@ -124,8 +134,11 @@ function HistoryTable({ history }: HistoryTableProps) {
                   )}
                 </div>
               </td>
-              <td className="score-cell">
-                {(result.score * 100).toFixed(1)}%
+              <td className={`score-cell ${(result as any).winnings > 0 ? 'has-winnings' : ''}`}>
+                {(result as any).winnings > 0
+                  ? formatCurrency((result as any).winnings, result.lottery_type)
+                  : '-'
+                }
               </td>
               <td className="time-cell">
                 {new Date(result.timestamp).toLocaleTimeString()}
