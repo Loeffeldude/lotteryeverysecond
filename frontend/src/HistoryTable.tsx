@@ -35,9 +35,7 @@ function HistoryTable({ history, sortBy, sortOrder, onSort }: HistoryTableProps)
             <th className="sortable" onClick={() => onSort("id")}>
               Game #{renderSortIndicator("id")}
             </th>
-            <th className="sortable" onClick={() => onSort("lottery_type")}>
-              Type{renderSortIndicator("lottery_type")}
-            </th>
+            <th>Type</th>
             <th>Draw</th>
             <th>Guess</th>
             <th className="sortable" onClick={() => onSort("winnings")}>

@@ -190,7 +190,7 @@ routes.set(new URLPattern({ pathname: "/history/:type" }), (pattern, req) => {
   const sortBy = params.get("sortBy") || "id";
   const sortOrder = params.get("sortOrder") || "desc";
 
-  const validSortColumns = ["id", "lottery_type", "winnings", "timestamp"];
+  const validSortColumns = ["id", "winnings", "timestamp"];
   const validSortOrders = ["asc", "desc"];
 
   if (!validSortColumns.includes(sortBy) || !validSortOrders.includes(sortOrder)) {

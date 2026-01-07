@@ -76,38 +76,26 @@ function App() {
         }
       }
 
-      if (sortByCol === "lottery_type") {
-        const combined = [...euroResult.data, ...powerResult.data].slice(
-          0,
-          itemsPerPage,
-        );
-        setHistory(combined);
-      } else {
-        const combined = [...euroResult.data, ...powerResult.data]
-          .sort((a, b) => {
-            if (sortByCol === "id") {
-              return sortOrderDir === "desc" ? b.id - a.id : a.id - b.id;
-            } else if (sortByCol === "winnings") {
-              const aWin = a.winnings || 0;
-              const bWin = a.winnings || 0;
-              return sortOrderDir === "desc" ? bWin - aWin : aWin - bWin;
-            } else if (sortByCol === "timestamp") {
-              return sortOrderDir === "desc"
-                ? new Date(b.timestamp).getTime() -
-                    new Date(a.timestamp).getTime()
-                : new Date(a.timestamp).getTime() -
-                    new Date(b.timestamp).getTime();
-            } else if (sortByCol === "lottery_type") {
-              return sortOrderDir === "desc"
-                ? b.lottery_type.localeCompare(a.lottery_type)
-                : a.lottery_type.localeCompare(b.lottery_type);
-            }
-            return 0;
-          })
-          .slice(0, itemsPerPage);
+      const combined = [...euroResult.data, ...powerResult.data]
+        .sort((a, b) => {
+          if (sortByCol === "id") {
+            return sortOrderDir === "desc" ? b.id - a.id : a.id - b.id;
+          } else if (sortByCol === "winnings") {
+            const aWin = a.winnings || 0;
+            const bWin = b.winnings || 0;
+            return sortOrderDir === "desc" ? bWin - aWin : aWin - bWin;
+          } else if (sortByCol === "timestamp") {
+            return sortOrderDir === "desc"
+              ? new Date(b.timestamp).getTime() -
+                  new Date(a.timestamp).getTime()
+              : new Date(a.timestamp).getTime() -
+                  new Date(b.timestamp).getTime();
+          }
+          return 0;
+        })
+        .slice(0, itemsPerPage);
 
-        setHistory(combined);
-      }
+      setHistory(combined);
 
       setTotalCount(Math.max(euroResult.total, powerResult.total));
     },
