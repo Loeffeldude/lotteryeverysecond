@@ -13,4 +13,4 @@ RUN deno cache main.ts
 
 EXPOSE 3350
 
-CMD ["deno", "run", "--allow-net", "--allow-read", "--allow-write", "--allow-env=DATABASE_PATH", "main.ts"]
+CMD ["deno", "run", "--allow-net", "--allow-read", "--allow-write", "--allow-env=DATABASE_PATH,SOCKET_LOG_DEBOUNCE_MS", "main.ts"]
