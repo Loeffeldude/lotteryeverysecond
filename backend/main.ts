@@ -170,8 +170,17 @@ routes.set(new URLPattern({ pathname: "/history/:type" }), (pattern, req) => {
   }
 
   const pageParam = Number(params.get("page"));
-
   const page = isNaN(pageParam) ? 0 : pageParam;
+
+  const sortBy = params.get("sortBy") || "id";
+  const sortOrder = params.get("sortOrder") || "desc";
+
+  const validSortColumns = ["id", "lottery_type", "winnings", "timestamp"];
+  const validSortOrders = ["asc", "desc"];
+
+  if (!validSortColumns.includes(sortBy) || !validSortOrders.includes(sortOrder)) {
+    return new Response(null, { status: 400 });
+  }
 
   const total = db
     .prepare(`SELECT COUNT(*) as count FROM draw WHERE lottery_type = ?`)
@@ -182,11 +191,24 @@ routes.set(new URLPattern({ pathname: "/history/:type" }), (pattern, req) => {
     return new Response(null, { status: 500 });
   }
 
+  const orderByClause = `ORDER BY ${sortBy} ${sortOrder.toUpperCase()}`;
+  
+  let indexHint = "";
+  if (sortBy === "id" && sortOrder === "desc") {
+    indexHint = "INDEXED BY idx_draw_type_id";
+  } else if (sortBy === "timestamp") {
+    indexHint = "INDEXED BY idx_draw_type_timestamp";
+  } else if (sortBy === "winnings") {
+    indexHint = sortOrder === "desc" 
+      ? "INDEXED BY idx_draw_type_winnings_desc"
+      : "INDEXED BY idx_draw_type_winnings";
+  }
+
   const results = db
     .prepare(
-      `SELECT * FROM draw 
+      `SELECT * FROM draw ${indexHint}
      WHERE lottery_type = ?
-     ORDER BY id DESC
+     ${orderByClause}
      LIMIT ? OFFSET ?;`,
     )
     .all(type, PAGINATION_ITEMS, PAGINATION_ITEMS * page);

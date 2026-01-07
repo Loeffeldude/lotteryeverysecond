@@ -6,9 +6,12 @@ import Ball from "./Ball.tsx";
 
 interface HistoryTableProps {
   history: (EuroJackpotResult | PowerballResult)[];
+  sortBy: string;
+  sortOrder: string;
+  onSort: (column: string) => void;
 }
 
-function HistoryTable({ history }: HistoryTableProps) {
+function HistoryTable({ history, sortBy, sortOrder, onSort }: HistoryTableProps) {
   const formatCurrency = (amount: number, type: string) => {
     const currency = type === "eurojackpot" ? "EUR" : "USD";
     return new Intl.NumberFormat(undefined, {
@@ -19,17 +22,30 @@ function HistoryTable({ history }: HistoryTableProps) {
     }).format(amount);
   };
 
+  const renderSortIndicator = (column: string) => {
+    if (sortBy !== column) return null;
+    return sortOrder === "desc" ? " ▼" : " ▲";
+  };
+
   return (
     <div className="history-table">
       <table>
         <thead>
           <tr>
-            <th>Game #</th>
-            <th>Type</th>
+            <th className="sortable" onClick={() => onSort("id")}>
+              Game #{renderSortIndicator("id")}
+            </th>
+            <th className="sortable" onClick={() => onSort("lottery_type")}>
+              Type{renderSortIndicator("lottery_type")}
+            </th>
             <th>Draw</th>
             <th>Guess</th>
-            <th>Winnings</th>
-            <th>Time</th>
+            <th className="sortable" onClick={() => onSort("winnings")}>
+              Winnings{renderSortIndicator("winnings")}
+            </th>
+            <th className="sortable" onClick={() => onSort("timestamp")}>
+              Time{renderSortIndicator("timestamp")}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -141,7 +157,14 @@ function HistoryTable({ history }: HistoryTableProps) {
                 }
               </td>
               <td className="time-cell">
-                {new Date(result.timestamp).toLocaleTimeString()}
+                {new Intl.DateTimeFormat(undefined, {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                }).format(new Date(result.timestamp))}
               </td>
             </tr>
           ))}

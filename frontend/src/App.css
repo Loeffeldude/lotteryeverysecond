@@ -429,6 +429,26 @@ h1 {
   color: #ffffff;
 }
 
+.history-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #999;
+  font-size: 0.9rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-label input[type="checkbox"] {
+  cursor: pointer;
+}
+
 .pause-button {
   background: #444;
   color: #fff;
@@ -472,6 +492,17 @@ h1 {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.history-table thead th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.history-table thead th.sortable:hover {
+  color: #ccc;
+  background: #2a2a2a;
 }
 
 .history-table tbody tr {
@@ -632,5 +663,9 @@ h1 {
 
   .history-table table {
     min-width: 600px;
+  }
+
+  .container {
+    padding: 1rem;
   }
 }

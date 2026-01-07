@@ -23,18 +23,24 @@ interface PowerballCardProps {
 
 type LotteryCardProps = EuroJackpotCardProps | PowerballCardProps;
 
-function LotteryCard({ type, result, moneySpent, moneyWon, profitLoss }: LotteryCardProps) {
+function LotteryCard({
+  type,
+  result,
+  moneySpent,
+  moneyWon,
+  profitLoss,
+}: LotteryCardProps) {
   const title = type === "eurojackpot" ? "EuroJackpot" : "Powerball";
-  
+
   const formatCurrency = (amount: number, currency: string) => {
     return new Intl.NumberFormat(undefined, {
-      style: 'currency',
+      style: "currency",
       currency,
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
   };
-  
+
   const getStoredNumbers = (key: string, defaultValue: number[]) => {
     const stored = localStorage.getItem(key);
     if (stored) {
@@ -48,10 +54,13 @@ function LotteryCard({ type, result, moneySpent, moneyWon, profitLoss }: Lottery
   };
 
   const [userNumbers, setUserNumbers] = useState<number[]>(() =>
-    getStoredNumbers(`${type}-numbers`, type === "eurojackpot" ? [0, 0, 0, 0, 0] : [0, 0, 0, 0, 0])
+    getStoredNumbers(
+      `${type}-numbers`,
+      type === "eurojackpot" ? [0, 0, 0, 0, 0] : [0, 0, 0, 0, 0],
+    ),
   );
   const [userSpecial, setUserSpecial] = useState<number[]>(() =>
-    getStoredNumbers(`${type}-special`, type === "eurojackpot" ? [0, 0] : [0])
+    getStoredNumbers(`${type}-special`, type === "eurojackpot" ? [0, 0] : [0]),
   );
 
   useEffect(() => {
@@ -64,8 +73,9 @@ function LotteryCard({ type, result, moneySpent, moneyWon, profitLoss }: Lottery
 
   const mainMax = type === "eurojackpot" ? 50 : 69;
   const specialMax = type === "eurojackpot" ? 12 : 26;
-  
-  const hasUserGuess = userNumbers.some(n => n > 0) || userSpecial.some(n => n > 0);
+
+  const hasUserGuess =
+    userNumbers.some((n) => n > 0) || userSpecial.some((n) => n > 0);
 
   if (!result) {
     return (
@@ -79,12 +89,7 @@ function LotteryCard({ type, result, moneySpent, moneyWon, profitLoss }: Lottery
   return (
     <div className={`card ${type}`}>
       <h2>{title}</h2>
-      <div className="draw-info">
-        <span className="draw-label">Game #{result.id}</span>
-        <span className="score">
-          Match: {(result.score * 100).toFixed(1)}%
-        </span>
-      </div>
+      <div className="draw-info"></div>
       {(moneySpent || moneyWon || profitLoss) && (
         <div className="finance-card">
           {moneySpent && (
@@ -106,7 +111,9 @@ function LotteryCard({ type, result, moneySpent, moneyWon, profitLoss }: Lottery
           {profitLoss && (
             <div className="finance-row">
               <span className="finance-label">Profit/Loss:</span>
-              <span className={`finance-amount ${profitLoss.amount >= 0 ? 'finance-profit' : 'finance-loss'}`}>
+              <span
+                className={`finance-amount ${profitLoss.amount >= 0 ? "finance-profit" : "finance-loss"}`}
+              >
                 {formatCurrency(profitLoss.amount, profitLoss.currency)}
               </span>
             </div>
@@ -197,7 +204,9 @@ function LotteryCard({ type, result, moneySpent, moneyWon, profitLoss }: Lottery
                   key={`user-${i}`}
                   value={num}
                   editable={true}
-                  isMatch={hasUserGuess && num > 0 && result.draw.numbers.includes(num)}
+                  isMatch={
+                    hasUserGuess && num > 0 && result.draw.numbers.includes(num)
+                  }
                   min={1}
                   max={mainMax}
                   onChange={(newValue) => {
@@ -218,7 +227,11 @@ function LotteryCard({ type, result, moneySpent, moneyWon, profitLoss }: Lottery
                     value={star}
                     type="star"
                     editable={true}
-                    isMatch={hasUserGuess && star > 0 && (result as EuroJackpotResult).draw.stars.includes(star)}
+                    isMatch={
+                      hasUserGuess &&
+                      star > 0 &&
+                      (result as EuroJackpotResult).draw.stars.includes(star)
+                    }
                     min={1}
                     max={specialMax}
                     onChange={(newValue) => {
@@ -233,7 +246,12 @@ function LotteryCard({ type, result, moneySpent, moneyWon, profitLoss }: Lottery
                   value={userSpecial[0]}
                   type="power"
                   editable={true}
-                  isMatch={hasUserGuess && userSpecial[0] > 0 && (result as PowerballResult).draw.powerball === userSpecial[0]}
+                  isMatch={
+                    hasUserGuess &&
+                    userSpecial[0] > 0 &&
+                    (result as PowerballResult).draw.powerball ===
+                      userSpecial[0]
+                  }
                   min={1}
                   max={specialMax}
                   onChange={(newValue) => {

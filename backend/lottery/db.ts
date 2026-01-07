@@ -50,6 +50,14 @@ const migrations = [
       
       CREATE INDEX IF NOT EXISTS idx_draw_winnings ON draw (winnings);
       CREATE INDEX IF NOT EXISTS idx_draw_type_winnings ON draw (lottery_type, winnings);
+      CREATE INDEX IF NOT EXISTS idx_draw_timestamp ON draw (timestamp);
+    `);
+  },
+  () => {
+    db.exec(`
+      CREATE INDEX IF NOT EXISTS idx_draw_type_id ON draw (lottery_type, id DESC);
+      CREATE INDEX IF NOT EXISTS idx_draw_type_timestamp ON draw (lottery_type, timestamp DESC);
+      CREATE INDEX IF NOT EXISTS idx_draw_type_winnings_desc ON draw (lottery_type, winnings DESC);
     `);
   },
 ];
