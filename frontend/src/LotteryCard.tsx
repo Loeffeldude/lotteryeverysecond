@@ -90,36 +90,40 @@ function LotteryCard({
     <div className={`card ${type}`}>
       <h2>{title}</h2>
       <div className="draw-info"></div>
-      {(moneySpent || moneyWon || profitLoss) && (
-        <div className="finance-card">
-          {moneySpent && (
-            <div className="finance-row">
-              <span className="finance-label">Money Spent:</span>
-              <span className="finance-amount">
-                {formatCurrency(moneySpent.amount, moneySpent.currency)}
-              </span>
-            </div>
-          )}
-          {moneyWon && (
-            <div className="finance-row">
-              <span className="finance-label">Money Won:</span>
-              <span className="finance-amount finance-won">
-                {formatCurrency(moneyWon.amount, moneyWon.currency)}
-              </span>
-            </div>
-          )}
-          {profitLoss && (
-            <div className="finance-row">
-              <span className="finance-label">Profit/Loss:</span>
-              <span
-                className={`finance-amount ${profitLoss.amount >= 0 ? "finance-profit" : "finance-loss"}`}
-              >
-                {formatCurrency(profitLoss.amount, profitLoss.currency)}
-              </span>
-            </div>
+      <div className="finance-card">
+        <div className="finance-row">
+          <span className="finance-label">Money Spent:</span>
+          {moneySpent ? (
+            <span className="finance-amount">
+              {formatCurrency(moneySpent.amount, moneySpent.currency)}
+            </span>
+          ) : (
+            <span className="skeleton skeleton-text">€0</span>
           )}
         </div>
-      )}
+        <div className="finance-row">
+          <span className="finance-label">Money Won:</span>
+          {moneyWon ? (
+            <span className="finance-amount finance-won">
+              {formatCurrency(moneyWon.amount, moneyWon.currency)}
+            </span>
+          ) : (
+            <span className="skeleton skeleton-text">€0</span>
+          )}
+        </div>
+        <div className="finance-row">
+          <span className="finance-label">Profit/Loss:</span>
+          {profitLoss ? (
+            <span
+              className={`finance-amount ${profitLoss.amount >= 0 ? "finance-profit" : "finance-loss"}`}
+            >
+              {formatCurrency(profitLoss.amount, profitLoss.currency)}
+            </span>
+          ) : (
+            <span className="skeleton skeleton-text">€0</span>
+          )}
+        </div>
+      </div>
 
       <div className="result-section">
         <h3>Official Draw</h3>

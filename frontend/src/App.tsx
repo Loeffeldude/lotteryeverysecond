@@ -227,30 +227,34 @@ function App() {
           We play both Powerball and EuroJackpot lotteries automatically, every
           single second. Watch the dreams come true (or not) in real-time.
         </p>
-        {statistics && (
-          <>
-            <div className="wins-counter">
-              <span className="wins-label">Total Jackpot Wins:</span>
-              <span
-                className={`wins-number${statistics.wins ? " wins-number--win" : ""}`}
-              >
-                {statistics.wins}
-              </span>
-            </div>
-            <div className="time-played">
-              <span className="wins-label">Total Time Played:</span>
-              <span className="wins-label">
-                {statistics.timePlayed.years > 0 &&
-                  `${statistics.timePlayed.years} Years `}
-                {statistics.timePlayed.days > 0 &&
-                  `${statistics.timePlayed.days} Days `}
-                {statistics.timePlayed.hours.toString().padStart(2, "0")}H:
-                {statistics.timePlayed.minutes.toString().padStart(2, "0")}M:
-                {statistics.timePlayed.seconds.toString().padStart(2, "0")}S
-              </span>
-            </div>
-          </>
-        )}
+        <div className="wins-counter">
+          <span className="wins-label">Total Jackpot Wins:</span>
+          {statistics ? (
+            <span
+              className={`wins-number${statistics.wins ? " wins-number--win" : ""}`}
+            >
+              {statistics.wins}
+            </span>
+          ) : (
+            <span className="skeleton skeleton-text">0</span>
+          )}
+        </div>
+        <div className="time-played">
+          <span className="wins-label">Total Time Played:</span>
+          {statistics ? (
+            <span className="wins-label">
+              {statistics.timePlayed.years > 0 &&
+                `${statistics.timePlayed.years} Years `}
+              {statistics.timePlayed.days > 0 &&
+                `${statistics.timePlayed.days} Days `}
+              {statistics.timePlayed.hours.toString().padStart(2, "0")}H:
+              {statistics.timePlayed.minutes.toString().padStart(2, "0")}M:
+              {statistics.timePlayed.seconds.toString().padStart(2, "0")}S
+            </span>
+          ) : (
+            <span className="skeleton skeleton-text">00H:00M:00S</span>
+          )}
+        </div>
       </header>
 
       <div className="cards">

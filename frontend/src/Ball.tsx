@@ -18,8 +18,15 @@ function Ball({
   max = 50
 }: BallProps) {
   const className = `ball ${type === "star" ? "star" : ""} ${type === "power" ? "power" : ""} ${isMatch ? "match" : ""} ${editable ? "editable" : ""}`;
+  
+  const getAriaLabel = () => {
+    const ballType = type === "star" ? "Star" : type === "power" ? "Powerball" : "Number";
+    const matchStatus = isMatch ? ", Match" : "";
+    return `${ballType} ${value}${matchStatus}`;
+  };
 
   if (editable) {
+    const ballType = type === "star" ? "star number" : type === "power" ? "powerball number" : "number";
     return (
       <input
         type="number"
@@ -46,6 +53,7 @@ function Ball({
         }}
         className={className}
         placeholder="?"
+        aria-label={`Enter your ${ballType} (${min}-${max})`}
       />
     );
   }
@@ -54,8 +62,10 @@ function Ball({
     <span
       className={className}
       style={{ "--value": value } as React.CSSProperties}
+      role="img"
+      aria-label={getAriaLabel()}
     >
-      <span style={{ "--value": value } as React.CSSProperties}></span>
+      <span style={{ "--value": value } as React.CSSProperties} aria-hidden="true"></span>
     </span>
   );
 }

@@ -4,36 +4,100 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
     <title>Lottery Every Second - Watch the Odds Fail in Real-Time</title>
-    <meta name="description" content="Playing Powerball and EuroJackpot every second. Watch lottery numbers roll live and see just how unlikely winning really is. No weekly wait for disappointment." />
-    <meta name="keywords" content="lottery, powerball, eurojackpot, odds, probability, statistics, live lottery" />
-    
+    <meta
+      name="description"
+      content="Playing Powerball and EuroJackpot every second. Watch lottery numbers roll live and see just how unlikely winning really is. No weekly wait for disappointment."
+    />
+    <meta
+      name="keywords"
+      content="lottery, powerball, eurojackpot, odds, probability, statistics, live lottery"
+    />
+    <link rel="canonical" href="https://lotteryeverysecond.com/" />
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://lotteryeverysecond.com/" />
     <meta property="og:title" content="Lottery Every Second" />
-    <meta property="og:description" content="Why wait a week for disappointment when you can have it every second? Watch Powerball and EuroJackpot play automatically in real-time." />
+    <meta
+      property="og:description"
+      content="Why wait a week for disappointment when you can have it every second? Watch Powerball and EuroJackpot play automatically in real-time."
+    />
     <meta property="og:site_name" content="Lottery Every Second" />
-    
+    <meta property="og:locale" content="en_US" />
+
     <!-- Twitter -->
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://lotteryeverysecond.com/" />
     <meta name="twitter:title" content="Lottery Every Second" />
-    <meta name="twitter:description" content="Playing the lottery every second to demonstrate the astronomical odds. Watch the numbers roll and never match." />
-    
-    <!-- Theme -->
+    <meta
+      name="twitter:description"
+      content="Playing the lottery every second to demonstrate the astronomical odds. Watch the numbers roll and never match."
+    />
+
     <meta name="theme-color" content="#1a1a1a" />
+
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="Lottery Every Second" />
+    <meta name="language" content="English" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Lottery Every Second",
+        "description": "Real-time lottery simulation playing Powerball and EuroJackpot every second to demonstrate winning odds",
+        "url": "https://lotteryeverysecond.com"
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    
-    <div id="cookie-notice" style="position:fixed;bottom:0;width:100%;background:#2c3e50;color:#fff;padding:20px;text-align:center;z-index:9999;box-shadow:0 -2px 10px rgba(0,0,0,0.3);font-size:14px;">
-      This website uses technically necessary cookies from Cloudflare for security and operation. 
-      <a href="/datenschutz.html" style="color:#3498db;text-decoration:underline;">Learn more</a>
-      <button onclick="document.getElementById('cookie-notice').style.display='none';localStorage.setItem('cookieAccepted','true');" style="margin-left:15px;background:#27ae60;color:#fff;border:none;padding:8px 20px;cursor:pointer;border-radius:4px;font-weight:bold;">OK</button>
+
+    <div
+      id="cookie-notice"
+      style="
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: #2c3e50;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+        z-index: 9999;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+        font-size: 14px;
+      "
+    >
+      This website uses technically necessary cookies from Cloudflare for
+      security and operation.
+      <a
+        href="/datenschutz.html"
+        style="color: #3498db; text-decoration: underline"
+        >Learn more</a
+      >
+      <button
+        onclick="document.getElementById('cookie-notice').style.display='none';localStorage.setItem('cookieAccepted','true');"
+        style="
+          margin-left: 15px;
+          background: #27ae60;
+          color: #fff;
+          border: none;
+          padding: 8px 20px;
+          cursor: pointer;
+          border-radius: 4px;
+          font-weight: bold;
+        "
+      >
+        OK
+      </button>
     </div>
     <script>
-      if(localStorage.getItem('cookieAccepted')){document.getElementById('cookie-notice').style.display='none';}
+      if (localStorage.getItem("cookieAccepted")) {
+        document.getElementById("cookie-notice").style.display = "none";
+      }
     </script>
   </body>
 </html>
