@@ -74,6 +74,19 @@ const sockets = new Set<WebSocket>();
 let isPaused = false;
 let pauseUntil = 0;
 
+const SOCKET_LOG_DEBOUNCE_MS = Number(Deno.env.get("SOCKET_LOG_DEBOUNCE_MS")) || 60_000;
+
+let socketLogTimeout: number | null = null;
+const logSocketCount = () => {
+  if (socketLogTimeout !== null) {
+    clearTimeout(socketLogTimeout);
+  }
+  socketLogTimeout = setTimeout(() => {
+    console.log(`Active WebSocket connections: ${sockets.size}`);
+    socketLogTimeout = null;
+  }, SOCKET_LOG_DEBOUNCE_MS);
+};
+
 interface StatisticsCache {
   gamesPlayed: Record<string, number>;
   totalWinnings: Record<string, number>;
@@ -127,14 +140,15 @@ routes.set(new URLPattern({ pathname: "/ws" }), (_, req) => {
 
   socket.addEventListener("open", () => {
     sockets.add(socket);
+    logSocketCount();
 
-    // Send initial statistics to the newly connected client
     const statistics = getStatistics();
     socket.send(JSON.stringify(statistics));
   });
 
   socket.addEventListener("close", () => {
     sockets.delete(socket);
+    logSocketCount();
   });
 
   return response;
