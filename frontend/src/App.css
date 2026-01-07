@@ -690,4 +690,35 @@ h1 {
   .container {
     padding: 1rem;
   }
+
+  .card {
+    padding: 1rem;
+  }
+
+  header {
+    margin-bottom: 2rem;
+  }
+
+  .wins-counter,
+  .time-played {
+    padding: 0.5rem;
+  }
+
+  .result-section {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .finance-card {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .history-section {
+    margin-top: 2rem;
+  }
+
+  .history-table {
+    padding: 0.75rem;
+  }
 }
