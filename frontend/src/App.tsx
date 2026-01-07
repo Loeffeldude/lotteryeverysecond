@@ -15,7 +15,7 @@ const fetchHistory = async (
   type: string,
   page: number,
   sortBy: string = "id",
-  sortOrder: string = "desc"
+  sortOrder: string = "desc",
 ) => {
   const params = new URLSearchParams({
     page: page.toString(),
@@ -45,65 +45,74 @@ function App() {
   const pageParam = params.get("page");
   const sortByParam = params.get("sortBy");
   const sortOrderParam = params.get("sortOrder");
-  
+
   const [currentPage, setCurrentPage] = useState(
     pageParam ? parseInt(pageParam) : 1,
   );
   const [sortBy, setSortBy] = useState(sortByParam || "id");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">(
-    (sortOrderParam === "asc" || sortOrderParam === "desc") ? sortOrderParam : "desc"
+    sortOrderParam === "asc" || sortOrderParam === "desc"
+      ? sortOrderParam
+      : "desc",
   );
-  const [separateLotteries, setSeparateLotteries] = useState(false);
 
-  const refetchAll = useCallback(async (
-    page: number = 0,
-    sortByCol: string = "id",
-    sortOrderDir: string = "desc"
-  ) => {
-    const [euroResult, powerResult] = await Promise.all([
-      fetchHistory("eurojackpot", page, sortByCol, sortOrderDir),
-      fetchHistory("powerball", page, sortByCol, sortOrderDir),
-    ]);
+  const refetchAll = useCallback(
+    async (
+      page: number = 0,
+      sortByCol: string = "id",
+      sortOrderDir: string = "desc",
+    ) => {
+      const [euroResult, powerResult] = await Promise.all([
+        fetchHistory("eurojackpot", page, sortByCol, sortOrderDir),
+        fetchHistory("powerball", page, sortByCol, sortOrderDir),
+      ]);
 
-    if (page === 0) {
-      if (euroResult.data.length > 0) {
-        setEuroJackpot(euroResult.data[0]);
+      if (page === 0) {
+        if (euroResult.data.length > 0) {
+          setEuroJackpot(euroResult.data[0]);
+        }
+        if (powerResult.data.length > 0) {
+          setPowerball(powerResult.data[0]);
+        }
       }
-      if (powerResult.data.length > 0) {
-        setPowerball(powerResult.data[0]);
+
+      if (sortByCol === "lottery_type") {
+        const combined = [...euroResult.data, ...powerResult.data].slice(
+          0,
+          itemsPerPage,
+        );
+        setHistory(combined);
+      } else {
+        const combined = [...euroResult.data, ...powerResult.data]
+          .sort((a, b) => {
+            if (sortByCol === "id") {
+              return sortOrderDir === "desc" ? b.id - a.id : a.id - b.id;
+            } else if (sortByCol === "winnings") {
+              const aWin = a.winnings || 0;
+              const bWin = a.winnings || 0;
+              return sortOrderDir === "desc" ? bWin - aWin : aWin - bWin;
+            } else if (sortByCol === "timestamp") {
+              return sortOrderDir === "desc"
+                ? new Date(b.timestamp).getTime() -
+                    new Date(a.timestamp).getTime()
+                : new Date(a.timestamp).getTime() -
+                    new Date(b.timestamp).getTime();
+            } else if (sortByCol === "lottery_type") {
+              return sortOrderDir === "desc"
+                ? b.lottery_type.localeCompare(a.lottery_type)
+                : a.lottery_type.localeCompare(b.lottery_type);
+            }
+            return 0;
+          })
+          .slice(0, itemsPerPage);
+
+        setHistory(combined);
       }
-    }
 
-    if (separateLotteries && sortByCol === "lottery_type") {
-      const combined = [...euroResult.data, ...powerResult.data].slice(0, itemsPerPage);
-      setHistory(combined);
-    } else {
-      const combined = [...euroResult.data, ...powerResult.data]
-        .sort((a, b) => {
-          if (sortByCol === "id") {
-            return sortOrderDir === "desc" ? b.id - a.id : a.id - b.id;
-          } else if (sortByCol === "winnings") {
-            const aWin = (a as any).winnings || 0;
-            const bWin = (b as any).winnings || 0;
-            return sortOrderDir === "desc" ? bWin - aWin : aWin - bWin;
-          } else if (sortByCol === "timestamp") {
-            return sortOrderDir === "desc"
-              ? new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-              : new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
-          } else if (sortByCol === "lottery_type") {
-            return sortOrderDir === "desc"
-              ? b.lottery_type.localeCompare(a.lottery_type)
-              : a.lottery_type.localeCompare(b.lottery_type);
-          }
-          return 0;
-        })
-        .slice(0, itemsPerPage);
-
-      setHistory(combined);
-    }
-    
-    setTotalCount(Math.max(euroResult.total, powerResult.total));
-  }, [separateLotteries]);
+      setTotalCount(Math.max(euroResult.total, powerResult.total));
+    },
+    [],
+  );
 
   const handlePageChange = async (page: number) => {
     setCurrentPage(page);
@@ -113,11 +122,11 @@ function App() {
 
   const handleSort = (column: string) => {
     let newSortOrder: "asc" | "desc" = "desc";
-    
+
     if (column === sortBy) {
       newSortOrder = sortOrder === "desc" ? "asc" : "desc";
     }
-    
+
     setSortBy(column);
     setSortOrder(newSortOrder);
     setCurrentPage(1);
@@ -127,13 +136,13 @@ function App() {
 
   const updateURL = (page: number, sortByCol: string, sortOrderDir: string) => {
     const url = new URL(window.location.href);
-    
+
     if (page === 1) {
       url.searchParams.delete("page");
     } else {
       url.searchParams.set("page", page.toString());
     }
-    
+
     if (sortByCol === "id" && sortOrderDir === "desc") {
       url.searchParams.delete("sortBy");
       url.searchParams.delete("sortOrder");
@@ -141,7 +150,7 @@ function App() {
       url.searchParams.set("sortBy", sortByCol);
       url.searchParams.set("sortOrder", sortOrderDir);
     }
-    
+
     window.history.replaceState({}, "", url);
   };
 
@@ -159,14 +168,24 @@ function App() {
 
       if (data.lottery_type === "eurojackpot") {
         setEuroJackpot(data as EuroJackpotResult);
-        if (!isPaused && currentPage === 1 && sortBy === "id" && sortOrder === "desc") {
+        if (
+          !isPaused &&
+          currentPage === 1 &&
+          sortBy === "id" &&
+          sortOrder === "desc"
+        ) {
           setHistory((prev) =>
             [data as EuroJackpotResult, ...prev].slice(0, itemsPerPage),
           );
         }
       } else if (data.lottery_type === "powerball") {
         setPowerball(data as PowerballResult);
-        if (!isPaused && currentPage === 1 && sortBy === "id" && sortOrder === "desc") {
+        if (
+          !isPaused &&
+          currentPage === 1 &&
+          sortBy === "id" &&
+          sortOrder === "desc"
+        ) {
           setHistory((prev) =>
             [data as PowerballResult, ...prev].slice(0, itemsPerPage),
           );
@@ -269,17 +288,6 @@ function App() {
         <div className="history-header">
           <h2>Recent History</h2>
           <div className="history-controls">
-            <label className="toggle-label">
-              <input
-                type="checkbox"
-                checked={separateLotteries}
-                onChange={(e) => {
-                  setSeparateLotteries(e.target.checked);
-                  refetchAll(currentPage - 1, sortBy, sortOrder);
-                }}
-              />
-              Separate by Type
-            </label>
             <button className="pause-button" onClick={handlePauseToggle}>
               {isPaused ? "Resume" : "Pause"}
             </button>

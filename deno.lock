@@ -16,6 +16,7 @@
     "npm:react@^19.2.0": "19.2.3",
     "npm:typescript-eslint@^8.46.4": "8.51.0_eslint@9.39.2_typescript@5.9.3_@typescript-eslint+parser@8.51.0__eslint@9.39.2__typescript@5.9.3",
     "npm:typescript@~5.9.3": "5.9.3",
+    "npm:vite@*": "7.3.0_@types+node@24.10.4_picomatch@4.0.3",
     "npm:vite@^7.2.4": "7.3.0_@types+node@24.10.4_picomatch@4.0.3",
     "npm:zod@^4.2.1": "4.3.4"
   },

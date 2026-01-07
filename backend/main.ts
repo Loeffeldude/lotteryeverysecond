@@ -74,7 +74,8 @@ const sockets = new Set<WebSocket>();
 let isPaused = false;
 let pauseUntil = 0;
 
-const SOCKET_LOG_DEBOUNCE_MS = Number(Deno.env.get("SOCKET_LOG_DEBOUNCE_MS")) || 60_000;
+const socketLogDebounceEnv = Number(Deno.env.get("SOCKET_LOG_DEBOUNCE_MS"));
+const SOCKET_LOG_DEBOUNCE_MS = isNaN(socketLogDebounceEnv) ? 60_000 : socketLogDebounceEnv;
 
 let socketLogTimeout: number | null = null;
 const logSocketCount = () => {
