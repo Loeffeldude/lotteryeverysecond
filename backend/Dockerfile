@@ -5,10 +5,11 @@ WORKDIR /app
 # Copy backend files
 COPY backend/deno.json ./
 COPY backend/lottery ./lottery
+COPY backend/migrate_winnings.ts ./
 COPY backend/main.ts backend/mod.ts ./
 
 # Cache dependencies
-RUN deno cache main.ts
+RUN deno cache main.ts 
 
 EXPOSE 3350
 
