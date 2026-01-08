@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type {
   EuroJackpotResult,
   PowerballResult,
@@ -77,6 +77,22 @@ function LotteryCard({
   const hasUserGuess =
     userNumbers.some((n) => n > 0) || userSpecial.some((n) => n > 0);
 
+  const prevMoneyWonRef = useRef(moneyWon?.amount);
+  const [isMoneyWonAnimating, setIsMoneyWonAnimating] = useState(false);
+
+  useEffect(() => {
+    if (
+      moneyWon?.amount !== undefined &&
+      prevMoneyWonRef.current !== undefined &&
+      moneyWon.amount > prevMoneyWonRef.current
+    ) {
+      setIsMoneyWonAnimating(true);
+      const timer = setTimeout(() => setIsMoneyWonAnimating(false), 300);
+      return () => clearTimeout(timer);
+    }
+    prevMoneyWonRef.current = moneyWon?.amount;
+  }, [moneyWon?.amount]);
+
   if (!result) {
     return (
       <div className={`card ${type}`}>
@@ -104,7 +120,7 @@ function LotteryCard({
         <div className="finance-row">
           <span className="finance-label">Money Won:</span>
           {moneyWon ? (
-            <span className="finance-amount finance-won">
+            <span className={`finance-amount finance-won ${isMoneyWonAnimating ? "finance-pop" : ""}`}>
               {formatCurrency(moneyWon.amount, moneyWon.currency)}
             </span>
           ) : (

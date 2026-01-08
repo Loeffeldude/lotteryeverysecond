@@ -285,6 +285,11 @@ function App() {
             </button>
           </div>
         </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={Math.ceil(totalCount / itemsPerPage)}
+          onPageChange={handlePageChange}
+        />
         <HistoryTable
           history={history}
           sortBy={sortBy}

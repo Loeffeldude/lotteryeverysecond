@@ -145,6 +145,10 @@ h1 {
   color: #fbbf24;
 }
 
+.finance-pop {
+  animation: pop 0.3s ease-out;
+}
+
 .finance-profit {
   color: #22c55e;
 }
@@ -514,6 +518,7 @@ h1 {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
 .history-table thead th.sortable {
@@ -586,14 +591,22 @@ h1 {
 .time-cell {
   color: #999;
   font-size: 0.85rem;
+  white-space: nowrap;
 }
 
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .pagination-button {
@@ -618,7 +631,18 @@ h1 {
   cursor: not-allowed;
 }
 
-.pagination-info {
+.pagination-page-active {
+  background: #fbbf24;
+  border-color: #fbbf24;
+  color: #000;
+}
+
+.pagination-page-active:hover {
+  background: #f59e0b;
+  border-color: #f59e0b;
+}
+
+.pagination-ellipsis {
   color: #999;
   font-size: 0.9rem;
 }
