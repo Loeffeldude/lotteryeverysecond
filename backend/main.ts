@@ -75,7 +75,9 @@ let isPaused = false;
 let pauseUntil = 0;
 
 const socketLogDebounceEnv = Number(Deno.env.get("SOCKET_LOG_DEBOUNCE_MS"));
-const SOCKET_LOG_DEBOUNCE_MS = isNaN(socketLogDebounceEnv) ? 60_000 : socketLogDebounceEnv;
+const SOCKET_LOG_DEBOUNCE_MS = isNaN(socketLogDebounceEnv)
+  ? 60_000
+  : socketLogDebounceEnv;
 
 let socketLogTimeout: number | null = null;
 const logSocketCount = () => {
@@ -193,7 +195,10 @@ routes.set(new URLPattern({ pathname: "/history/:type" }), (pattern, req) => {
   const validSortColumns = ["id", "winnings", "timestamp"];
   const validSortOrders = ["asc", "desc"];
 
-  if (!validSortColumns.includes(sortBy) || !validSortOrders.includes(sortOrder)) {
+  if (
+    !validSortColumns.includes(sortBy) ||
+    !validSortOrders.includes(sortOrder)
+  ) {
     return new Response(null, { status: 400 });
   }
 
@@ -207,16 +212,17 @@ routes.set(new URLPattern({ pathname: "/history/:type" }), (pattern, req) => {
   }
 
   const orderByClause = `ORDER BY ${sortBy} ${sortOrder.toUpperCase()}`;
-  
+
   let indexHint = "";
   if (sortBy === "id" && sortOrder === "desc") {
     indexHint = "INDEXED BY idx_draw_type_id";
   } else if (sortBy === "timestamp") {
     indexHint = "INDEXED BY idx_draw_type_timestamp";
   } else if (sortBy === "winnings") {
-    indexHint = sortOrder === "desc" 
-      ? "INDEXED BY idx_draw_type_winnings_desc"
-      : "INDEXED BY idx_draw_type_winnings";
+    indexHint =
+      sortOrder === "desc"
+        ? "INDEXED BY idx_draw_type_winnings_desc"
+        : "INDEXED BY idx_draw_type_winnings";
   }
 
   const results = db
@@ -253,7 +259,7 @@ function getStatistics(): Statistics {
     maxCount = Math.max(maxCount, count);
   }
 
-  const timePlayedSeconds = maxCount / 2;
+  const timePlayedSeconds = maxCount;
 
   const seconds = Math.floor(timePlayedSeconds % 60);
   const minutes = Math.floor(timePlayedSeconds / 60) % 60;
